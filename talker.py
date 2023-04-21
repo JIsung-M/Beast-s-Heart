@@ -2,7 +2,7 @@
 # license removed for brevity
 from std_msgs.msg import String
 import rospy
-import subprocess
+#import subprocess
 import time
 
 
