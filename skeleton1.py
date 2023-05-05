@@ -29,16 +29,16 @@ class DetermineColor:
             # msg.frame_id = '+1' # CCW (Blue background)
             # msg.frame_id = '0'  # STOP
             # msg.frame_id = '-1' # CW (Red background)
-            flatten_image=image.reshape(-1.3)
+            flatten_image=image.reshape(-1,3)
             x=flatten_image.shape[0]
-            for i in range(x)
+            for i in range(x):
                 bins=np.bincount(flatten_image[i,0]) +np.bincount(flatten_image[i,1])+np.bincount(flatten_image[i,2])
                 background_color=np.argmax(bins)
-                if background_color==-1
+                if background_color==-1:
                     msg.frame_id='-1'
-                elif background_color==0
+                elif background_color==0:
                     msg.frame_id='0'
-                elif background_color==1
+                elif background_color==1:
                     msg.frame_id='+1'
             # publish color_state
             self.color_pub.publish(msg)
