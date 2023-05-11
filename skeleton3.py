@@ -41,7 +41,7 @@ class DetermineColor:
             background_color = centers[np.argmax(np.unique(labels, return_counts=True)[1])]
             if self.is_color_in_range(background_color, red_range):
                 msg.frame_id='-1'
-            elif self.is_color_in_range(background_color, blue_range):
+            else self.is_color_in_range(background_color, blue_range):
                 msg.frame_id='+1'
             elif:
                 msg.frame_id='0'
