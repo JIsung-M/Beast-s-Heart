@@ -1,3 +1,5 @@
+
+#!/usr/bin/env python3
 import rospy
 import numpy as np
 import cv2
@@ -39,42 +41,43 @@ class DetermineColor:
             print(e)
 
     def get_background_color(self, image):
-        # Convert image to grayscale for easier color analysis
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Convert image to HSV color space
+        hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        # Calculate the histogram of grayscale intensities
-        hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+        # Define lower and upper thresholds for red color in HSV space
+        lower_red1 = np.array([0, 50, 50])
+        upper_red1 = np.array([10, 255, 255])
+        lower_red2 = np.array([160, 50, 50])
+        upper_red2 = np.array([180, 255, 255])
 
-        # Find the index of the most dominant color
-        dominant_color_index = np.argmax(hist)
+        # Create masks for red color ranges
+        mask1 = cv2.inRange(hsv_image, lower_red1, upper_red1)
+        mask2 = cv2.inRange(hsv_image, lower_red2, upper_red2)
 
-        # Map the dominant color index to the actual color
-        colors = {
-            0: 'black',
-            255: 'white',
-            # Add more color mappings as needed
-        }
-        dominant_color = colors.get(dominant_color_index)
+        # Combine the masks to obtain the final red color mask
+        red_mask = cv2.bitwise_or(mask1, mask2)
 
-        return dominant_color
+        # Calculate the percentage of red pixels in the mask
+        total_pixels = red_mask.size
+        red_pixels = np.count_nonzero(red_mask)
+        red_percentage = red_pixels / total_pixels
+
+        # Set a threshold to determine if the image has a red background
+        threshold = 0.1
+        if red_percentage >= threshold:
+            return 'red'
+        else:
+            return None
 
     def is_blue(self, color):
-        # Define the range of blue color in HSV space
-        lower_blue = np.array([90, 50, 50])
-        upper_blue = np.array([130, 255, 255])
+        # Perform blue color detection logic here
+        # ...
 
-        # Convert the color to the HSV color space
-        hsv_color = cv2.cvtColor(np.uint8([[color]]), cv2.COLOR_BGR2HSV)
+    def rospy_shutdown(self, signal, frame):
+        rospy.signal_shutdown("shut down")
+        sys.exit(0)
 
-        # Check if the color falls within the blue range
-        return cv2.inRange(hsv_color, lower_blue, upper_blue)
-    def is_red(self, color):
-        # Define the range of red color in HSV space
-        lower_red = np.array([0, 50, 50])
-        upper_red = np.array([10, 255, 255])
-
-        # Convert the color to the HSV color space
-        hsv_color = cv2.cvtColor(np.uint8([[color]]), cv2.COLOR_BGR2HSV)
-
-        # Check if the color falls within the red range
-        return cv2.inRange(hsv_color, lower_red, upper_red)
+if __name__ == '__main__':
+    detector = DetermineColor()
+    rospy.init_node('CompressedImages1', anonymous=False)
+    rospy.spin()
