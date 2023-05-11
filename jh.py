@@ -30,9 +30,9 @@ class DetermineColor:
             common_color = np.argmax(hist)  #빈도수가 가장 많은 색상 추출
             # TODO
             # determine the color and assing +1, 0, or, -1 for frame_id
-            if common_color > 100:  # CW (Red background)0
+            if 165<= common_color <=180 or 0<= common_color <=15:  # CW (Red background)0
                 msg.frame_id = '-1' # CW
-            elif common_color < 10: # CCW (Blue background)
+            elif 90 <=common_color <=135: # CCW (Blue background)
                 msg.frame_id = '+1' # CCW
             else:
                 msg.frame_id = '0' # STOP
