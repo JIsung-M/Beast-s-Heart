@@ -1,0 +1,36 @@
+import cv2
+import numpy as np
+
+# Load image
+img = cv2.imread("path/to/image.jpg")
+
+# Convert image to HSV color space
+hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+# Define color ranges for blue and red backgrounds in HSV
+blue_lower = np.array([90, 50, 50], dtype=np.uint8)
+blue_upper = np.array([130, 255, 255], dtype=np.uint8)
+
+red_lower1 = np.array([0, 50, 50], dtype=np.uint8)
+red_upper1 = np.array([10, 255, 255], dtype=np.uint8)
+
+red_lower2 = np.array([170, 50, 50], dtype=np.uint8)
+red_upper2 = np.array([180, 255, 255], dtype=np.uint8)
+
+# Create masks for blue and red backgrounds
+blue_mask = cv2.inRange(hsv_img, blue_lower, blue_upper)
+red_mask1 = cv2.inRange(hsv_img, red_lower1, red_upper1)
+red_mask2 = cv2.inRange(hsv_img, red_lower2, red_upper2)
+red_mask = cv2.bitwise_or(red_mask1, red_mask2)
+
+# Count pixels in each mask
+blue_pixels = cv2.countNonZero(blue_mask)
+red_pixels = cv2.countNonZero(red_mask)
+
+# Determine background color based on number of blue and red pixels
+if blue_pixels > red_pixels:
+    background_color = "Blue"
+else:
+    background_color = "Red"
+
+print("The background color is:", background_color)
