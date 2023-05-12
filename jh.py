@@ -11,7 +11,7 @@ class DetermineColor:
         self.image_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.callback)
         self.color_pub = rospy.Publisher('/rotate_cmd', Header, queue_size=10)
         self.bridge = CvBridge()
-        self.count=0
+        
 
     def callback(self, data):
         try:
@@ -25,12 +25,12 @@ class DetermineColor:
             msg.frame_id = '0'  # default: STOP
 
             # determine background color
-            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)  # rgb->hsv로 변경
-            hist, _ = np.histogram(hsv[:,:,0], bins=180, range=[0, 180])  #hue(색상)에 대한 히스토그램
-            common_color = np.argmax(hist)  #빈도수가 가장 많은 색상 추출
+            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) 
+            hist, _ = np.histogram(hsv[:,:,0], bins=180, range=[0, 180]) 
+            common_color = np.argmax(hist) 
             # TODO
-            # determine the color and assing +1, 0, or, -1 for frame_id
-            if 165<= common_color <=180 or 0<= common_color <=15:  # CW (Red background)0
+           
+            if 165<= common_color <=180 or 0<= common_color <=15:  # CW (Red background)
                 msg.frame_id = '-1' # CW
             elif 90 <=common_color <=135: # CCW (Blue background)
                 msg.frame_id = '+1' # CCW
