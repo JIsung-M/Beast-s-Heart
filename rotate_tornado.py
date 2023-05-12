@@ -30,7 +30,7 @@ class DetermineColor:
             common_color = np.argmax(hist) 
             # TODO
            
-            if 165<= common_color <=180 or 0<= common_color <=15:  # CW (Red background)
+            if 165<= common_color <=180 or 0<= common_color <=14:  # CW (Red background)
                 msg.frame_id = '-1' # CW
             elif 90 <=common_color <=135: # CCW (Blue background)
                 msg.frame_id = '+1' # CCW
